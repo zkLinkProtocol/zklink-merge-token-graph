@@ -24,14 +24,14 @@ export function handleDepositToMerge(event: DepositToMergeEvent): void {
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
 
-  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, entity.amount);
   const totalBalance = loadOrCreateTotalBalance(entity.sourceToken, entity.mergeToken);
-  balance.sourceToken = entity.sourceToken;
-  balance.mergeToken = entity.mergeToken;
   totalBalance.sourceToken = entity.sourceToken;
   totalBalance.mergeToken = entity.mergeToken;
-  balance.balance = balance.balance.plus(entity.amount);
   totalBalance.totalBalance = totalBalance.totalBalance.plus(entity.amount);
+  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
+  balance.sourceToken = entity.sourceToken;
+  balance.mergeToken = entity.mergeToken;
+  balance.balance = balance.balance.plus(entity.amount);
   balance.save();
   }
 
@@ -49,14 +49,14 @@ export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
 
-  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, entity.amount);
   const totalBalance = loadOrCreateTotalBalance(entity.sourceToken, entity.mergeToken);
-  balance.sourceToken = entity.sourceToken;
-  balance.mergeToken = entity.mergeToken;
   totalBalance.sourceToken = entity.sourceToken;
   totalBalance.mergeToken = entity.mergeToken;
-  balance.balance = balance.balance.div(entity.amount);
   totalBalance.totalBalance = totalBalance.totalBalance.div(entity.amount);
+  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
+  balance.sourceToken = entity.sourceToken;
+  balance.mergeToken = entity.mergeToken;
+  balance.balance = balance.balance.div(entity.amount);
   balance.save();
 }
 

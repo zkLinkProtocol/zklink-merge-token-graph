@@ -1,0 +1,39 @@
+type DepositToMerge @entity(immutable: true) {
+  id: Bytes!
+  sourceToken: Bytes! # address
+  mergeToken: Bytes! # address
+  sender: Bytes! # address
+  amount: BigInt! # uint256
+  receiver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type WithdrawFromMerge @entity(immutable: true) {
+  id: Bytes!
+  sourceToken: Bytes! # address
+  mergeToken: Bytes! # address
+  sender: Bytes! # address
+  amount: BigInt! # uint256
+  receiver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Balance @entity(immutable: true) {
+  id: Bytes! #sourceToken,mergeToken,blockTimestamp
+  sourceToken: Bytes! # address
+  mergeToken: Bytes! # address
+  balance: BigInt! # uint256
+  blockTimestamp: BigInt!
+}
+
+type TotalBalance @entity(immutable: true) {
+  id: Bytes! #sourceToken,mergeToken
+  sourceToken: Bytes! # address
+  mergeToken: Bytes! # address
+  totalBalance: BigInt! # uint256
+}
+

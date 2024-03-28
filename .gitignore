@@ -1,0 +1,20 @@
+.idea
+.DS_Store
+node_modules
+
+log
+tmp
+generated
+build
+.env
+abi
+# Hardhat files
+cache-zk
+artifacts-zk
+cache
+artifacts
+coverage
+coverage.json
+
+# Openzeppelin upgrade
+.upgradable

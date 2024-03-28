@@ -1,0 +1,8 @@
+{
+  "mainnet": {
+    "mergeTokenPortal": {
+      "address": "0x45f37c7D14B576a2Ad9CB4298FDff8cb06306d43",
+      "startBlock": 0
+    }
+  }
+}

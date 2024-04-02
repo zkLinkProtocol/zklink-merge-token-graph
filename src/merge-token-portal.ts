@@ -28,7 +28,7 @@ export function handleDepositToMerge(event: DepositToMergeEvent): void {
   totalBalance.sourceToken = entity.sourceToken;
   totalBalance.mergeToken = entity.mergeToken;
   totalBalance.totalBalance = totalBalance.totalBalance.plus(entity.amount);
-  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
+  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance, 1, entity.amount);
   balance.sourceToken = entity.sourceToken;
   balance.mergeToken = entity.mergeToken;
   balance.balance = balance.balance.plus(entity.amount);
@@ -54,7 +54,7 @@ export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
   totalBalance.sourceToken = entity.sourceToken;
   totalBalance.mergeToken = entity.mergeToken;
   totalBalance.totalBalance = totalBalance.totalBalance.div(entity.amount);
-  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
+  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance, 2, entity.amount);
   balance.sourceToken = entity.sourceToken;
   balance.mergeToken = entity.mergeToken;
   balance.balance = balance.balance.div(entity.amount);
@@ -62,7 +62,7 @@ export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
   entity.save();
 }
 
-export function loadOrCreateBalance(sourceToken: Bytes, mergeToken: Bytes, blockTimestamp: BigInt, initBalance: BigInt): Balance {
+export function loadOrCreateBalance(sourceToken: Bytes, mergeToken: Bytes, blockTimestamp: BigInt, initBalance: BigInt, initClass: Number, amount: BigInt): Balance {
   sourceToken = toLowerCase(sourceToken);
   mergeToken = toLowerCase(mergeToken);
   const id = Bytes.fromByteArray(
@@ -70,10 +70,17 @@ export function loadOrCreateBalance(sourceToken: Bytes, mergeToken: Bytes, block
   );
   let balance = Balance.load(id);
 
-  if (!balance) {
+  if (!balance && initClass == 1) {
     balance = new Balance(id);
     balance.sourceToken = sourceToken;
-    balance.balance = initBalance;
+    balance.balance = initBalance.div(amount);
+    balance.mergeToken = mergeToken;
+    balance.blockTimestamp = blockTimestamp;
+    balance.save();
+  } else if (!balance && initClass == 2) {
+    balance = new Balance(id);
+    balance.sourceToken = sourceToken;
+    balance.balance = initBalance.plus(amount);
     balance.mergeToken = mergeToken;
     balance.blockTimestamp = blockTimestamp;
     balance.save();

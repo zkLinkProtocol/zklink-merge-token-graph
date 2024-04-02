@@ -4,8 +4,8 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy merge_token_portal2 --ipfs http://13.114.13.100:5001 --node http://13.114.13.100:8020",
-    "create-local": "graph create merge_token_portal2 --node http://13.114.13.100:8020",
+    "deploy": "graph deploy merge_token_portal3 --ipfs http://13.114.13.100:5001 --node http://13.114.13.100:8020",
+    "create-local": "graph create merge_token_portal3 --node http://13.114.13.100:8020",
     "remove-local": "graph remove --node http://localhost:8020/ root/zk_l3_graph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 root/zk_l3_graph",
     "test": "graph test"

@@ -27,13 +27,14 @@ export function handleDepositToMerge(event: DepositToMergeEvent): void {
   const totalBalance = loadOrCreateTotalBalance(entity.sourceToken, entity.mergeToken);
   totalBalance.sourceToken = entity.sourceToken;
   totalBalance.mergeToken = entity.mergeToken;
-  totalBalance.totalBalance = totalBalance.totalBalance.plus(entity.amount);
-  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance, BigInt.fromString("1"), entity.amount);
+  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
   balance.sourceToken = entity.sourceToken;
   balance.mergeToken = entity.mergeToken;
   balance.balance = balance.balance.plus(entity.amount);
+  totalBalance.totalBalance = totalBalance.totalBalance.plus(entity.amount);
   balance.save();
   entity.save();
+  totalBalance.save();
   }
 
 export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
@@ -53,39 +54,34 @@ export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
   const totalBalance = loadOrCreateTotalBalance(entity.sourceToken, entity.mergeToken);
   totalBalance.sourceToken = entity.sourceToken;
   totalBalance.mergeToken = entity.mergeToken;
-  totalBalance.totalBalance = totalBalance.totalBalance.div(entity.amount);
-  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance, BigInt.fromString("2"), entity.amount);
+  const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
   balance.sourceToken = entity.sourceToken;
   balance.mergeToken = entity.mergeToken;
   balance.balance = balance.balance.div(entity.amount);
+  totalBalance.totalBalance = totalBalance.totalBalance.div(entity.amount);
   balance.save();
   entity.save();
+  totalBalance.save();
 }
 
-export function loadOrCreateBalance(sourceToken: Bytes, mergeToken: Bytes, blockTimestamp: BigInt, initBalance: BigInt, initClass: BigInt, amount: BigInt): Balance {
+export function loadOrCreateBalance(sourceToken: Bytes, mergeToken: Bytes, blockTimestamp: BigInt, initBalance: BigInt): Balance {
   sourceToken = toLowerCase(sourceToken);
   mergeToken = toLowerCase(mergeToken);
   const id = Bytes.fromByteArray(
     crypto.keccak256(sourceToken.concat(mergeToken).concat(Bytes.fromByteArray(Bytes.fromBigInt(blockTimestamp))))
   );
   let balance = Balance.load(id);
-
-  if (balance == null && initClass == BigInt.fromString("1")) {
+  //balance == null && initClass == BigInt.fromString("1")
+  if (!balance) {
     balance = new Balance(id);
     balance.sourceToken = sourceToken;
-    balance.balance = initBalance.div(amount);
-    balance.mergeToken = mergeToken;
-    balance.blockTimestamp = blockTimestamp;
-    balance.save();
-  } else if (balance == null && initClass == BigInt.fromString("2")) {
-    balance = new Balance(id);
-    balance.sourceToken = sourceToken;
-    balance.balance = initBalance.plus(amount);
+    balance.balance = initBalance;
     balance.mergeToken = mergeToken;
     balance.blockTimestamp = blockTimestamp;
     balance.save();
   } 
-  return <Balance> balance;
+  //return <Balance> balance;
+  return balance;
 }
 
 export function loadOrCreateTotalBalance(sourceToken: Bytes, mergeToken: Bytes): TotalBalance {

@@ -33,6 +33,7 @@ export function handleDepositToMerge(event: DepositToMergeEvent): void {
   balance.mergeToken = entity.mergeToken;
   balance.balance = balance.balance.plus(entity.amount);
   balance.save();
+  entity.save();
   }
 
 export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
@@ -58,13 +59,14 @@ export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
   balance.mergeToken = entity.mergeToken;
   balance.balance = balance.balance.div(entity.amount);
   balance.save();
+  entity.save();
 }
 
 export function loadOrCreateBalance(sourceToken: Bytes, mergeToken: Bytes, blockTimestamp: BigInt, initBalance: BigInt): Balance {
   sourceToken = toLowerCase(sourceToken);
   mergeToken = toLowerCase(mergeToken);
   const id = Bytes.fromByteArray(
-    crypto.keccak256(sourceToken.concat(mergeToken).concat(Bytes.fromBigInt(blockTimestamp)))
+    crypto.keccak256(sourceToken.concat(mergeToken).concat(Bytes.fromByteArray(Bytes.fromBigInt(blockTimestamp))))
   );
   let balance = Balance.load(id);
 
@@ -73,9 +75,9 @@ export function loadOrCreateBalance(sourceToken: Bytes, mergeToken: Bytes, block
     balance.sourceToken = sourceToken;
     balance.balance = initBalance;
     balance.mergeToken = mergeToken;
-    balance.blockTimestamp = BIGINT_ZERO;
+    balance.blockTimestamp = blockTimestamp;
     balance.save();
-  }
+  } 
   return balance;
 }
 

@@ -30,3 +30,10 @@ type Balance @entity(immutable: true) {
   blockTimestamp: BigInt!
 }
 
+type TotalBalance @entity(immutable: true) {
+  id: Bytes! #sourceToken,mergeToken
+  sourceToken: Bytes! # address
+  mergeToken: Bytes! # address
+  totalBalance: BigInt! # uint256
+}
+

@@ -25,8 +25,6 @@ export function handleDepositToMerge(event: DepositToMergeEvent): void {
   entity.transactionHash = event.transaction.hash
 
   const totalBalance = loadOrCreateTotalBalance(entity.sourceToken, entity.mergeToken);
-  totalBalance.sourceToken = entity.sourceToken;
-  totalBalance.mergeToken = entity.mergeToken;
   const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
   balance.sourceToken = entity.sourceToken;
   balance.mergeToken = entity.mergeToken;
@@ -52,8 +50,6 @@ export function handleWithdrawFromMerge(event: WithdrawFromMergeEvent): void {
   entity.transactionHash = event.transaction.hash
 
   const totalBalance = loadOrCreateTotalBalance(entity.sourceToken, entity.mergeToken);
-  totalBalance.sourceToken = entity.sourceToken;
-  totalBalance.mergeToken = entity.mergeToken;
   const balance = loadOrCreateBalance(entity.sourceToken, entity.mergeToken, entity.blockTimestamp, totalBalance.totalBalance);
   balance.sourceToken = entity.sourceToken;
   balance.mergeToken = entity.mergeToken;
@@ -91,12 +87,11 @@ export function loadOrCreateTotalBalance(sourceToken: Bytes, mergeToken: Bytes):
   let totalBalance = TotalBalance.load(id);
 
   if (!totalBalance) {
-    let totalBalance = new TotalBalance(id);
+    totalBalance = new TotalBalance(id);
     totalBalance.sourceToken = sourceToken;
     totalBalance.totalBalance = BIGINT_ZERO;
     totalBalance.mergeToken = mergeToken;
     totalBalance.save();
-    return totalBalance
   }
   return totalBalance;
 }

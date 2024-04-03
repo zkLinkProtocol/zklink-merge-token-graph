@@ -22,7 +22,7 @@ type WithdrawFromMerge @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type Balance @entity(immutable: true) {
+type Balance @entity {
   id: Bytes! #sourceToken,mergeToken,blockTimestamp
   sourceToken: Bytes! # address
   mergeToken: Bytes! # address
@@ -30,7 +30,7 @@ type Balance @entity(immutable: true) {
   blockTimestamp: BigInt!
 }
 
-type TotalBalance @entity(immutable: true) {
+type TotalBalance @entity {
   id: Bytes! #sourceToken,mergeToken
   sourceToken: Bytes! # address
   mergeToken: Bytes! # address
